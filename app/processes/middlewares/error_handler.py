@@ -1,17 +1,16 @@
 from flask import jsonify, make_response, Response
 from werkzeug.exceptions import BadRequest, HTTPException
-from app.errors.custom_bad_request import InvalidFormData
+from app.errors.validation_error import ValidationError
 from app.configs import Config
 
 
 def handleExceptions(e: Exception):    
-    print("type of exc :", e)
-
-    if isinstance(e, InvalidFormData):
+    if isinstance(e, ValidationError):
         res = make_response(
-            e.serialize()
+            e.serialize(),
+            403
         )
-        res.set_cookie(Config.USER_TOKEN_KEY, "", max_age=0)
+        res.set_cookie(Config.USER_TOKEN_KEY, "", max_age=0, httponly=True)
         return res
 
     if(isinstance(e, BadRequest)):   
@@ -20,7 +19,7 @@ def handleExceptions(e: Exception):
             "message": e.description,
             "error": e.code,
         })
-        res.set_cookie(Config.USER_TOKEN_KEY, "", max_age=0)
+        res.set_cookie(Config.USER_TOKEN_KEY, "", max_age=0, httponly=True)
         return res
     
     if(isinstance(e, HTTPException)):
@@ -32,7 +31,7 @@ def handleExceptions(e: Exception):
         return res, e.code
     
 
-    return make_response({"error occurred": type(e).__str__(e)})
+    return make_response({"error occurred": type(e).__repr__(e)})
 
     
 
