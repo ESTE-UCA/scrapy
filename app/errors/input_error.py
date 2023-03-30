@@ -55,7 +55,7 @@ class InputError:
             "reasons": [
                 reason.serialize()
                 for reason in self.reasons
-            ] if self.reasons is not None and len(self.reasons) > 0 else None
+            ] if self.reasons is not None else None
         }
     
     def __repr__(self) -> str:

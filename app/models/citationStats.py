@@ -13,14 +13,15 @@ class YearlyIncreasedBy:
             increasedBy=json["count"]
         );
 
+    def serialize(self) -> dict: 
+        return {
+            "from_year": self.fromYear,
+            "to_year": self.toYear,
+            "increased_by": self.increasedBy
+        }
+
     def __repr__(self):
-        return f'''
-            YearlyIncreasedBy(
-                fromYear: {self.fromYear},
-                toYear: {self.toYear},
-                increasedBy: {self.increasedBy}
-            )
-        '''
+        return f'<YearlyIncreasedBy fromYear={self.fromYear} toYear={self.toYear} increasedBy={self.increasedBy}>'
 
         
 class CitationStats:
@@ -38,6 +39,16 @@ class CitationStats:
                 for rawIncreasedBy in json["citedByBuckets"]
             ]
         );
+
+    def serialize(self) -> dict:
+        return {
+            "all_citations_count": self.allCitationsCount,
+            "key_citations_count": self.keyCitationsCount,
+            "increment_stats": [
+                stat.serialize()
+                for stat in self.incrementStats
+            ]
+        }
 
     def __repr__(self):
         return f'''

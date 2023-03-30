@@ -23,7 +23,7 @@ def handleExceptions(e: Exception):
         return res
     
     if(isinstance(e, HTTPException)):
-        make_response({
+        res = make_response({
             "description": HTTPException().description,
             "message": e.description,
             "code": e.code,

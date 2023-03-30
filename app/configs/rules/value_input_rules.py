@@ -1,5 +1,3 @@
-
-
 from app.types.password import PasswordStrength
 
 

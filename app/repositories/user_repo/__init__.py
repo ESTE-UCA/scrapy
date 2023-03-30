@@ -1,7 +1,7 @@
 from app.db import db
-from app.models.user import User
+from app.models import User
 from datetime import datetime
-from sqlalchemy.exc import NoResultFound, DatabaseError
+from sqlalchemy.exc import NoResultFound
 
  
 class UserRepository:
@@ -39,7 +39,8 @@ class UserRepository:
         try:
             if not user.isPersisted():
                 db.session.add(user)
-
+            
+            user.updatedAt = datetime.now()
             db.session.commit()
             return user
         except Exception as e:

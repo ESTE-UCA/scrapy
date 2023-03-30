@@ -9,10 +9,10 @@ class PaperLink:
     def fromOriginJson(json: dict[str, any]):
         return PaperLink(url=json["url"], type=json["linkType"]);
 
+    def serialize(self) -> dict:
+        return {
+            "url": self.url,
+            "type": self.type
+        }
     def __repr__(self):
-        return f'''
-            PaperLink(
-                url: {self.url},
-                type: {self.type},
-            )
-        '''
+        return f'<PaperLink url={self.url} type={self.type}>'

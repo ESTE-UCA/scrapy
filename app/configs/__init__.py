@@ -11,4 +11,5 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + database_dir
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ADMINS_PAYLOADS = os.environ.get("ADMINS_PAYLOADS") or [{"email": "admin@test.com", "id": "7e462ca4-4d6a-444e-b2ea-ab124a7d6f06"}].__str__()
 
