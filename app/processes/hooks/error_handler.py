@@ -1,4 +1,4 @@
-from flask import jsonify, make_response, Response
+from flask import make_response
 from werkzeug.exceptions import BadRequest, HTTPException
 from app.errors.validation_error import ValidationError
 from app.configs import Config

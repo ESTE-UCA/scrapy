@@ -2,6 +2,9 @@ import validators
 import re
 
 class Validator:
+    def isProperUsername(name: str) -> bool:
+        return not Validator.hasDigits(name)
+    
     def hasUpper(value: str) -> bool:
         for i in range(0, len(value)):
             if value[i].isupper():

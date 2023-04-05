@@ -1,17 +1,31 @@
+from __future__ import annotations
 from typing import Optional
 from .author import Author
-from datetime import datetime 
-from .paperLink import PaperLink
-from .citationStats import CitationStats
-from app.db import db
-
-class Paper:
-    # id = db.Column(db.String(), primary_key=True)
-    # corpusId = db.Column(db.String(), primary_key=True)
-    # slug = db.Column(db.String(), unique=True)
-    # title = db.Column(db.String())
-    # description = db.Column(db.String())
+from datetime import datetime
+from app.types.paper_link import PaperLink, PaperLinkField, PaperLinksField
+from app.types.citation_stats import CitationStats, CitationStatsField
+from app import db
+from .paper_author import paper_author
+class Paper(db.Model):
+    id = db.Column(db.String(), primary_key=True)
+    corpusId = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(), unique=True)
+    title = db.Column(db.String())
+    description = db.Column(db.String())
+    _fieldsOfStudy = db.Column(db.String())
+    primaryPaperLink = db.Column(PaperLinkField)
+    alternatePaperLinks = db.Column(PaperLinksField)
+    citationStats = db.Column(CitationStatsField)
+    publishedAt = db.Column(db.DateTime(timezone=True))
+    authors = db.relationship('Author', secondary=paper_author, back_populates='papers')
     
+    @property
+    def fieldsOfStudy(self) -> list[str]:
+        return [field for field in self._fieldsOfStudy.split(',')]
+    
+    @fieldsOfStudy.setter
+    def fieldsOfStudy(self, value: list[str]):
+        self._fieldsOfStudy = ''.join(str(f) for f in value)
 
     def __init__(self, id: str, corpusId: str, slug: str, title: str, description: str, authors: list[Author], fieldsOfStudy: list[str], primaryPaperLink: Optional[PaperLink] = None, alternatePaperLinks: Optional[list[PaperLink]] = None, citationStats: Optional[CitationStats] = None, publishedAt: Optional[datetime] = None):
         self.id = id
@@ -20,13 +34,13 @@ class Paper:
         self.title = title
         self.description = description
         self.authors = authors
-        self.fieldsOfStudy = fieldsOfStudy
+        self.fieldsOfStudy = ''.join(str(f) for f in fieldsOfStudy)
         self.publishedAt = publishedAt
         self.primaryPaperLink = primaryPaperLink
         self.alternatePaperLinks = alternatePaperLinks
-        self.citationStats = citationStats;
+        self.citationStats = citationStats
     
-    def getAuthorById(self, authorId: str) -> Author | None:
+    def getAuthorById(self, authorId: int) -> Author | None:
         for author in self.authors:
             if author.id == authorId:
                 return author
@@ -69,7 +83,8 @@ class Paper:
                     link.serialize()
                     for link in self.alternatePaperLinks
                 ] or None
-            }
+            },
+            "citation_stats": self.citationStats.serialize() if self.citationStats is not None else None
         }
 
     def __repr__(self):

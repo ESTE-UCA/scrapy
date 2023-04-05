@@ -35,7 +35,12 @@ def error_msgs() -> dict[mKey, Union[str, list[str]]]:
             "try to sign in instead of creating new user.",
             "use different email address as current is already being used.",
             "if the email is yours and you haven't signed up in this website before. feel free to contact us on [oussamamakouar@gmail.com] and report a potential fraud or scam."
-        )
+        ),
+        mKey.USERNAME_MSG_EMPTY: "username field must have a value",
+        mKey.USERNAME_HINT_EMPTY: "please enter your full name (example: Elarbi Rodriguez)",
+        mKey.USERNAME_MSG_INVALID: "please enter a proper username (no digits)",
+        mKey.USERNAME_HINT_INVALID: "only computers and non living get labeled by numbers"
+
     }   
 
 def error_msg(key: mKey):

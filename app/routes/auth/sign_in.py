@@ -3,12 +3,12 @@ from . import auth
 from flask import request
 from werkzeug.exceptions import BadRequest
 from app.repositories.user_repo import UserRepository
-from app.processes.decorators.validate_form import validate_sign_form
+from app.processes.decorators.validate_form import validate_signin_form
 from app.types.user_credential import UserCredential
 from app.utils import AuthUtils 
 
 @auth.route('/signin', methods=['POST'])
-@validate_sign_form
+@validate_signin_form
 def signIn(credentials: UserCredential):    
     
     # check if the current user is already signed in if so return an error or a success response
@@ -29,6 +29,6 @@ def signIn(credentials: UserCredential):
     
     isAdminUser = AuthUtils.isAdminUser(user.payload())
 
-    res = AuthUtils.userSignInRes(user.serialize(isAdminUser))
+    res = AuthUtils.userSignInRes(user.dto(isAdminUser))
     # send back response with status code of 200 and user object as payload
     return res, 200

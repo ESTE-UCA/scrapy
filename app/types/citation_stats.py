@@ -1,3 +1,4 @@
+from sqlalchemy import TypeDecorator,JSON
 
 
 class YearlyIncreasedBy:
@@ -58,3 +59,26 @@ class CitationStats:
                 incrementStats: {self.incrementStats},
             )
         ''';
+
+
+class CitationStatsField(TypeDecorator):
+    impl = JSON
+
+    def __repr__(self):
+        return self.impl.__repr__()
+    
+    def load_dialect_impl(self, dialect):
+        return dialect.type_descriptor(JSON)
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            if isinstance(value, CitationStats):
+                return value.serialize()
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            return CitationStats.fromOriginJson(value)

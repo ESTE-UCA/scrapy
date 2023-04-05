@@ -10,7 +10,7 @@ class AuthUtils:
         # generate a json web token
         token = jwt.encode(payload=serializedUser, key=Config.JWT_KEY, algorithm="HS256")
         # store it in session or a cookie
-        response.set_cookie(Config.USER_TOKEN_KEY, token, httponly=True, samesite="strict")
+        response.headers['authorization'] = token
         return response
     
     def userSignOutRes()-> Response:
@@ -18,7 +18,7 @@ class AuthUtils:
         response = make_response({
             "currentuser": None
         })
-        response.set_cookie(Config.USER_TOKEN_KEY, "", httponly=True, samesite="strict", max_age=0)
+        response.headers['authorization'] = None
         return response
 
     def isAdminUser(payload: dict[str, any]) -> bool:
